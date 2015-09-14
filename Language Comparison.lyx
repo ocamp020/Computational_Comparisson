@@ -1,0 +1,1127 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style apalike2
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\align center
+
+\series bold
+\size larger
+Computer Languages Comparison 
+\end_layout
+
+\begin_layout Standard
+\align center
+
+\series bold
+\size large
+Dominic Smith & Sergio Ocampo Díaz
+\begin_inset space \hfill{}
+\end_inset
+
+University of Minnesota
+\end_layout
+
+\begin_layout Standard
+The objective is to compare running time of three computer languages for
+ solving dynamic general equilibrium models.
+ 
+\end_layout
+
+\begin_layout Section
+Neoclassical growth model
+\end_layout
+
+\begin_layout Standard
+Consider the following dynamic programming problem:
+\begin_inset Formula 
+\[
+V\left(k,z\right)=\max_{k^{'},h}\, u\left(f\left(k,h,z\right)+\left(1-\delta\right)k-k^{'}\right)+\nu\left(h\right)+\beta\int V\left(k^{'},z^{'}\right)P\left(dz^{'},z\right)
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $z$
+\end_inset
+
+ is a Markov process with transition function 
+\begin_inset Formula $P$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+A solution to the problem consists on a value function 
+\begin_inset Formula $V$
+\end_inset
+
+ and two policy functions 
+\begin_inset Formula $g_{k}$
+\end_inset
+
+ and 
+\begin_inset Formula $g_{h}$
+\end_inset
+
+ for the choice variables 
+\begin_inset Formula $k^{'}$
+\end_inset
+
+ and 
+\begin_inset Formula $h$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In what follows it is assumed that 
+\begin_inset Formula $z$
+\end_inset
+
+ follows process:
+\begin_inset Formula 
+\[
+\ln z^{'}=\rho\ln z+\epsilon
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\rho\in\left(0,1\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\epsilon\overset{iid}{\sim}N\left(0,\sigma^{2}\right)$
+\end_inset
+
+.
+ Then 
+\begin_inset Formula $P\left(d\ln z^{'},\ln z\right)=\phi\left(\frac{\ln z^{'}-\rho\ln z}{\sigma}\right)d\ln z^{'}$
+\end_inset
+
+ where 
+\begin_inset Formula $\phi\left(\cdot\right)$
+\end_inset
+
+ is the standard normal density.
+\end_layout
+
+\begin_layout Subsection
+Algorithm
+\end_layout
+
+\begin_layout Standard
+Below let 
+\begin_inset Formula $I\left(x,\vec{x},\overline{f}\right)$
+\end_inset
+
+ be an interpolation operator that approximates the value of function 
+\begin_inset Formula $f$
+\end_inset
+
+ at 
+\begin_inset Formula $x$
+\end_inset
+
+ using the grid 
+\begin_inset Formula $\vec{x}$
+\end_inset
+
+ and known values for 
+\begin_inset Formula $f$
+\end_inset
+
+ at the grid nodes, stored in vector 
+\begin_inset Formula $\overline{f}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+First the continuous stochastic process of 
+\begin_inset Formula $z$
+\end_inset
+
+ is approximated by a discrete Markov process with 
+\begin_inset Formula $n_{z}$
+\end_inset
+
+ grid points.
+ The method by Rowenhorst (1995) is used.
+ This gives a matrix 
+\begin_inset Formula $P$
+\end_inset
+
+ of size 
+\begin_inset Formula $n_{z}\times n_{z}$
+\end_inset
+
+ and a vector 
+\begin_inset Formula $\vec{z}$
+\end_inset
+
+ with the nodes of the grid for 
+\begin_inset Formula $z$
+\end_inset
+
+.
+ The rows of 
+\begin_inset Formula $P$
+\end_inset
+
+ sum to one and 
+\begin_inset Formula $P\left(i,j\right)$
+\end_inset
+
+ is interpreted as 
+\begin_inset Formula $\Pr\left(z^{'}=\vec{z}_{j}|z=\vec{z}_{i}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Set a grid for 
+\begin_inset Formula $k$
+\end_inset
+
+ and 
+\begin_inset Formula $h$
+\end_inset
+
+ of 
+\begin_inset Formula $n_{k}$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{h}$
+\end_inset
+
+ nodes respectively.
+ Denote them as 
+\begin_inset Formula $\vec{k}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vec{h}$
+\end_inset
+
+.
+ It is often useful to add curvature to the capital grid so that nodes are
+ closer at the lower end.
+\end_layout
+
+\begin_layout Enumerate
+Solve the problem over a discrete state space.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Define a matrix 
+\begin_inset Formula $\overline{P}$
+\end_inset
+
+ of size 
+\begin_inset Formula $n_{z}\times n_{k}\times n_{z}$
+\end_inset
+
+ where:
+\begin_inset Formula 
+\[
+\overline{P}\left(i,j,l\right)=P\left(i,l\right)
+\]
+
+\end_inset
+
+so that 
+\begin_inset Formula $\overline{P}\left(i,j,l\right)=\Pr\left(z^{'}=\vec{z}_{i}|z=\vec{z}_{l}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Define a matrix 
+\begin_inset Formula $\bar{F}$
+\end_inset
+
+ of size 
+\begin_inset Formula $n_{z}\times n_{k}\times n_{k}\times n_{h}$
+\end_inset
+
+ as:
+\begin_inset Formula 
+\[
+\bar{F}\left(i,j,l,m\right)=u\left(f\left(\vec{k}_{j},\vec{h}_{m},\vec{z}_{i}\right)+\left(1-\delta\right)\vec{k}_{j}-\vec{k}_{l}\right)-\nu\left(\vec{h}_{m}\right)
+\]
+
+\end_inset
+
+This is the payoff function evaluated at any combination of states and controls.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+For this is useful to define matrices 
+\begin_inset Formula $K$
+\end_inset
+
+, 
+\begin_inset Formula $Z$
+\end_inset
+
+, 
+\begin_inset Formula $K^{'}$
+\end_inset
+
+ and 
+\begin_inset Formula $H$
+\end_inset
+
+ of dimensions 
+\begin_inset Formula $n_{k}\times n_{z}\times n_{k}\times n_{h}$
+\end_inset
+
+ such that:
+\begin_inset Formula 
+\[
+K\left(i,j,l,m\right)=\vec{k}_{j}\quad Z\left(i,j,l,m\right)=\vec{z}_{i}\quad K^{'}\left(i,j,l,m\right)=\vec{k}_{l}\quad H\left(i,j,l,m\right)=\vec{h}_{m}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Define a matrix 
+\begin_inset Formula $F$
+\end_inset
+
+ of size 
+\begin_inset Formula $n_{z}\times n_{k}\times n_{k}$
+\end_inset
+
+ as:
+\begin_inset Formula 
+\[
+F\left(i,j,l\right)=\max_{m\in\left\{ 1,\ldots,n_{h}\right\} }\overline{F}\left(i,j,l.m\right)
+\]
+
+\end_inset
+
+This is the payoff given the optimal choice of 
+\begin_inset Formula $h$
+\end_inset
+
+ for any triple 
+\begin_inset Formula $\left(z,k,k^{'}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Guess a value for 
+\begin_inset Formula $V_{0}$
+\end_inset
+
+ for all combinations of 
+\begin_inset Formula $k$
+\end_inset
+
+ and 
+\begin_inset Formula $z$
+\end_inset
+
+.
+ This is a matrix of dimension 
+\begin_inset Formula $n_{z}\times n_{k}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+For 
+\begin_inset Formula $t=1,\ldots$
+\end_inset
+
+ :
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Define a matrix 
+\begin_inset Formula $E\left[V_{t-1}\right]$
+\end_inset
+
+ of size 
+\begin_inset Formula $n_{z}\times n_{k}\times n_{k}$
+\end_inset
+
+ (interpreted as 
+\begin_inset Formula $\left(z,k,k^{'}\right)$
+\end_inset
+
+) as:
+\begin_inset Formula 
+\[
+E\left[V_{t-1}\right]\left(i,j,l\right)=PV_{t-1}\left(l,i\right)
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $PV_{t-1}$
+\end_inset
+
+ give the expected value over 
+\begin_inset Formula $z^{'}$
+\end_inset
+
+ given a pair 
+\begin_inset Formula $\left(z,k^{'}\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+PV_{t-1}\left(i,j\right)=\sum_{l=1}^{n_{z}}\overline{PV}_{t-1}\left(l,i,j\right)
+\]
+
+\end_inset
+
+and:
+\begin_inset Formula 
+\[
+\overline{PV}_{t-1}=\overline{P}\odot\overline{V}_{t-1}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\odot$
+\end_inset
+
+ is the Hadamard product.
+\begin_inset Newline newline
+\end_inset
+
+Finally 
+\begin_inset Formula $\overline{V}_{t-1}$
+\end_inset
+
+ is interpreted as the continuation for a pair 
+\begin_inset Formula $\left(z^{'},k^{'}\right)$
+\end_inset
+
+ given current period's 
+\begin_inset Formula $z$
+\end_inset
+
+ (the third element):
+\begin_inset Formula 
+\[
+\overline{V}_{t-1}\left(i,j,l\right)=V_{t-1}\left(i,j\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Define a matrix 
+\begin_inset Formula $V_{t}$
+\end_inset
+
+ of dimensions 
+\begin_inset Formula $n_{z}\times n_{k}$
+\end_inset
+
+ as:
+\begin_inset Formula 
+\[
+V_{t}\left(i,j\right)=\max_{l\in\left\{ 1,\ldots,n_{k}\right\} }\left\{ F\left(i,j,l\right)+E\left[V_{i-1}\right]\left(i,j,l\right)\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Let 
+\begin_inset Formula $d_{V}=\max_{i}\max_{j}\left[V_{t}\left(i,j\right)-V_{t-1}\left(i,j\right)\right]$
+\end_inset
+
+.
+ Stop if 
+\begin_inset Formula $d_{V}<\mbox{Tol}_{V}$
+\end_inset
+
+.
+ Call the final matrix 
+\begin_inset Formula $\overline{V}_{T}$
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Solve the problem over for continuous state space.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Let 
+\begin_inset Formula $\overline{V}_{0}=\overline{V}_{T}$
+\end_inset
+
+ be the matrix size 
+\begin_inset Formula $n_{z}\times n_{k}$
+\end_inset
+
+ that stores the values of 
+\begin_inset Formula $V_{0}$
+\end_inset
+
+ at all pairs 
+\begin_inset Formula $\left(\vec{z}_{i},\vec{k}_{j}\right)$
+\end_inset
+
+.
+ 
+\begin_inset Formula $\overline{V}_{T}$
+\end_inset
+
+ is taken from above.
+\end_layout
+
+\begin_layout Enumerate
+For 
+\begin_inset Formula $t=1,\ldots$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+For 
+\begin_inset Formula $i\in\left\{ 1,\ldots,n_{z}\right\} $
+\end_inset
+
+ define 
+\begin_inset Formula $\tilde{V}_{t-1}\left(\vec{z}_{i},k\right)=I\left(k,\vec{k},\overline{V}_{t-1}\left(\vec{z}_{i},\cdot\right)\right)$
+\end_inset
+
+ as the interpolated value of 
+\begin_inset Formula $V_{t-1}$
+\end_inset
+
+ at 
+\begin_inset Formula $k$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+For each 
+\begin_inset Formula $j=\left\{ 1,\ldots,n_{k}\right\} $
+\end_inset
+
+ and 
+\begin_inset Formula $i=\left\{ 1,\ldots,n_{z}\right\} $
+\end_inset
+
+ Let 
+\begin_inset Formula $F_{t-1}\left(i,j,k^{'},h\right)$
+\end_inset
+
+ be a function defined as:
+\begin_inset Formula 
+\[
+F_{t-1}\left(i,j,k^{'},h\right)=u\left(f\left(\vec{k}_{j},h,\vec{z}_{i}\right)+\left(1-\delta\right)\vec{k}_{j}-k^{'}\right)+\nu\left(h\right)+\beta\sum_{l=1}^{n_{z}}P\left(i,l\right)\tilde{V}_{t-1}\left(\vec{z}_{l},k^{'}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+For each 
+\begin_inset Formula $j=\left\{ 1,\ldots,n_{k}\right\} $
+\end_inset
+
+ and 
+\begin_inset Formula $i=\left\{ 1,\ldots,n_{z}\right\} $
+\end_inset
+
+ define 
+\begin_inset Formula $\overline{V}_{t}\left(i,j\right)$
+\end_inset
+
+ as:
+\begin_inset Formula 
+\[
+\overline{V}_{t}\left(i,j\right)=\max_{k^{'},h}F\left(i,j,k^{'},h\right)
+\]
+
+\end_inset
+
+where the max operator is solved by a maximization routine.
+\begin_inset Newline newline
+\end_inset
+
+The labor choice is solved through the FOC:
+\begin_inset Formula 
+\[
+0=u^{'}\left(c\right)f_{h}\left(k,h,z\right)-v^{'}\left(h\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Let 
+\begin_inset Formula $d_{V}=\max_{i}\max_{j}\left[\overline{V}_{t}\left(i,j\right)-\overline{V}_{t-1}\left(i,j\right)\right]$
+\end_inset
+
+.
+ Stop if 
+\begin_inset Formula $d_{V}<\mbox{Tol}_{V}$
+\end_inset
+
+.
+ Call the final matrix 
+\begin_inset Formula $\overline{V}$
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+The solution to the problem is formed by value function 
+\begin_inset Formula $\overline{V}$
+\end_inset
+
+ and the policy functions that it implies through:
+\begin_inset Formula 
+\[
+\left(\overline{g}_{k}\left(i,j\right),\overline{g}_{h}\left(i,j\right)\right)=\underset{k^{'},h}{\mbox{argmax}}F\left(i,j,k^{'},h\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Parametrization
+\end_layout
+
+\begin_layout Standard
+Functional forms:
+\begin_inset Formula 
+\[
+u\left(c\right)=\log c\quad\nu\left(h\right)=\chi\log\left(1-h\right)\quad f\left(k,h,z\right)=Azk^{\alpha}h^{1-\alpha}
+\]
+
+\end_inset
+
+Parameters:
+\begin_inset Formula 
+\[
+\beta=0.99\quad\alpha=\nicefrac{1}{3}\quad A=1
+\]
+
+\end_inset
+
+parameter 
+\begin_inset Formula $\chi$
+\end_inset
+
+ is set so that 
+\begin_inset Formula $h_{ss}=\nicefrac{1}{3}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Steady state:
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\chi}{1-h} & = & c^{-1}\left[\left(1-\alpha\right)Azk^{\alpha}h^{-\alpha}\right]\\
+c^{-1} & = & \beta c^{-1}\left[\alpha Ak^{\alpha-1}h^{1-\alpha}+\left(1-\delta\right)\right]\\
+c & = & Azk^{\alpha}h^{1-\alpha}-\delta k\\
+z & = & 1
+\end{eqnarray*}
+
+\end_inset
+
+From the second equation:
+\begin_inset Formula 
+\[
+\frac{h}{k}=\Psi=\left(\frac{\frac{1}{\beta}+\delta-1}{\alpha A}\right)^{\frac{1}{1-\alpha}}
+\]
+
+\end_inset
+
+Then from the third equation:
+\begin_inset Formula 
+\[
+c=\left(A\Psi^{1-\alpha}-\delta\right)k
+\]
+
+\end_inset
+
+From the first equation:
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\chi}{1-h} & = & c^{-1}\left[\left(1-\alpha\right)Azk^{\alpha}h^{-\alpha}\right]\\
+\frac{\chi}{1-\Psi k} & = & \frac{\left(1-\alpha\right)A\Psi^{-\alpha}}{\left(A\Psi^{1-\alpha}-\delta\right)k}\\
+k & = & \frac{\frac{\left(1-\alpha\right)A\Psi^{-\alpha}}{A\Psi^{1-\alpha}-\delta}}{\chi+\Psi\frac{\left(1-\alpha\right)A\Psi^{-\alpha}}{A\Psi^{1-\alpha}-\delta}}
+\end{eqnarray*}
+
+\end_inset
+
+This gives an analytic solution for the steady state that allows for calibration
+ of 
+\begin_inset Formula $h_{ss}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Finally the interpolation and maximization algorithms are chosen:
+\end_layout
+
+\begin_layout Itemize
+Interpolation: Cubic splines as in Numerical Recipes (chapter 3) or Heer
+ & Mausner (second edition).
+\end_layout
+
+\begin_layout Itemize
+Maximization: The maximization is carried out with double Brent.
+\end_layout
+
+\begin_layout Section
+Aiyagari Model
+\end_layout
+
+\begin_layout Standard
+Consider the following dynamic programming problem:
+\begin_inset Formula 
+\begin{eqnarray*}
+V\left(a,h|w,R\right) & = & \max_{c,a^{'}}u\left(c\right)+\beta E_{h^{'}}\left[V\left(a^{'},h^{'}|w,R\right)\right]\\
+\mbox{s.t.} &  & c+a^{'}=wh+Ra\\
+ &  & c\geq0\qquad a^{'}\geq-\phi
+\end{eqnarray*}
+
+\end_inset
+
+where 
+\begin_inset Formula $h$
+\end_inset
+
+ is an iid (across time and agents) random variable with support 
+\begin_inset Formula $\left[\underline{h},\overline{h}\right]$
+\end_inset
+
+, and 
+\begin_inset Formula $\phi$
+\end_inset
+
+ is the natural borrowing limit 
+\begin_inset Formula $\phi=\frac{w\underline{h}}{R-1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The aggregate variables 
+\begin_inset Formula $w$
+\end_inset
+
+ and 
+\begin_inset Formula $R$
+\end_inset
+
+ are determined as:
+\begin_inset Formula 
+\[
+w=f_{h}\left(K,H\right)\qquad R=f_{k}\left(K,H\right)+\left(1-\delta\right)
+\]
+
+\end_inset
+
+where: 
+\begin_inset Formula 
+\[
+K=\int ad\Gamma\left(a\right)\qquad H=E\left[h\right]
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\Gamma$
+\end_inset
+
+ is the limiting distribution of 
+\begin_inset Formula $a$
+\end_inset
+
+ across agents.
+\end_layout
+
+\begin_layout Standard
+It is convenient to cast the problem in terms of the auxiliary variables
+ 
+\begin_inset Formula $z$
+\end_inset
+
+ and 
+\begin_inset Formula $\hat{a}$
+\end_inset
+
+ defined as:
+\begin_inset Formula 
+\[
+\hat{a}=a+\phi\qquad z=wh+R\hat{a}-\left(R-1\right)\phi
+\]
+
+\end_inset
+
+The definition implies:
+\begin_inset Formula 
+\[
+c=z-\hat{a}^{'}
+\]
+
+\end_inset
+
+The problem is now:
+\begin_inset Formula 
+\begin{eqnarray*}
+V\left(z|w,R\right) & = & \max_{\hat{a}^{'}}u\left(z-\hat{a}^{'}\right)+\beta E_{h^{'}}\left[V\left(z^{'}|w,R\right)\right]\\
+\mbox{s.t.} &  & z^{'}=wh^{'}+R\hat{a}^{'}-\left(R-1\right)\phi\\
+ &  & \hat{a}^{'}\geq0
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Algorithm
+\end_layout
+
+\begin_layout Standard
+Below let 
+\begin_inset Formula $I\left(x,\vec{x},\overline{f}\right)$
+\end_inset
+
+ be an interpolation operator that approximates the value of function 
+\begin_inset Formula $f$
+\end_inset
+
+ at 
+\begin_inset Formula $x$
+\end_inset
+
+ using the grid 
+\begin_inset Formula $\vec{x}$
+\end_inset
+
+ and known values for 
+\begin_inset Formula $f$
+\end_inset
+
+ at the grid nodes, stored in vector 
+\begin_inset Formula $\overline{f}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Grids:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Set a grid for 
+\begin_inset Formula $h$
+\end_inset
+
+ of 
+\begin_inset Formula $n_{h}$
+\end_inset
+
+ nodes.
+ Denote it 
+\begin_inset Formula $\vec{h}$
+\end_inset
+
+.
+ Assign a vector 
+\begin_inset Formula $P$
+\end_inset
+
+ with the probability of each It is often useful to add curvature to the
+ capital grid so that nodes are closer at the lower end.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Initial guess
+\end_layout
+
+\begin_layout Enumerate
+VFI
+\end_layout
+
+\begin_layout Enumerate
+Distribution
+\end_layout
+
+\begin_layout Enumerate
+Equilibrium and update
+\end_layout
+
+\begin_layout Subsection
+Parametrization
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Standard
+Description of the machine used.
+\end_layout
+
+\begin_layout Section
+Tools
+\end_layout
+
+\begin_layout Subsection
+Cubic splines, interpolation and derivatives
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\vec{x}$
+\end_inset
+
+ be a 
+\begin_inset Formula $n$
+\end_inset
+
+-element vector with entries 
+\begin_inset Formula $\vec{x}_{i}$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $\vec{y}$
+\end_inset
+
+ be such that 
+\begin_inset Formula $\vec{y}_{i}=f\left(\vec{x}_{i}\right)$
+\end_inset
+
+.
+ Consider 
+\begin_inset Formula $x\in\left[x_{i},x_{i+1}\right]$
+\end_inset
+
+, then:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f\left(x\right)\approx A\left(x\right)\vec{y}_{i}+B\left(x\right)\vec{y}_{i+1}+C\left(x\right)\vec{y}_{i}^{''}+D\left(x\right)\vec{y}_{i+1}^{''}
+\]
+
+\end_inset
+
+where:
+\begin_inset Formula 
+\begin{eqnarray*}
+A\left(x\right) & = & \frac{\vec{x}_{i+1}-x}{\vec{x}_{i+1}-\vec{x}_{i}}\\
+B\left(x\right) & = & 1-A\left(x\right)\\
+C\left(x\right) & = & \frac{1}{6}\left[A^{3}\left(x\right)-A\left(x\right)\right]\left(\vec{x}_{i+1}-\vec{x}_{i}\right)^{2}\\
+D\left(x\right) & = & \frac{1}{6}\left[B^{3}\left(x\right)-B\left(x\right)\right]\left(\vec{x}_{i+1}-\vec{x}_{i}\right)^{2}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The derivative of 
+\begin_inset Formula $f$
+\end_inset
+
+ at 
+\begin_inset Formula $x$
+\end_inset
+
+ is approximated by:
+\begin_inset Formula 
+\[
+\frac{\partial f\left(x\right)}{\partial x}\approx A^{'}\left(x\right)\vec{y}_{i}+B^{'}\left(x\right)\vec{y}_{i+1}+C^{'}\left(x\right)\vec{y}_{i}^{''}+D^{'}\left(x\right)\vec{y}_{i+1}^{''}
+\]
+
+\end_inset
+
+where:
+\begin_inset Formula 
+\begin{eqnarray*}
+A^{'}\left(x\right) & = & \frac{-1}{\vec{x}_{i+1}-\vec{x}_{i}}\\
+B^{'}\left(x\right) & = & -A^{'}\left(x\right)\\
+C^{'}\left(x\right) & = & \frac{1}{6}\left[3A^{2}\left(x\right)-1\right]A^{'}\left(x\right)\left(\vec{x}_{i+1}-\vec{x}_{i}\right)^{2}\\
+D^{'}\left(x\right) & = & \frac{1}{6}\left[3B^{2}\left(x\right)-1\right]B^{'}\left(x\right)\left(\vec{x}_{i+1}-\vec{x}_{i}\right)^{2}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The second derivative is approximated by:
+\begin_inset Formula 
+\[
+\frac{\partial f\left(x\right)}{\partial x}\approx A^{''}\left(x\right)\vec{y}_{i}+B^{''}\left(x\right)\vec{y}_{i+1}+C^{''}\left(x\right)\vec{y}_{i}^{''}+D^{''}\left(x\right)\vec{y}_{i+1}^{''}
+\]
+
+\end_inset
+
+where:
+\begin_inset Formula 
+\begin{eqnarray*}
+A^{''}\left(x\right) & = & 0\\
+B^{''}\left(x\right) & = & 0\\
+C^{''}\left(x\right) & = & A\left(x\right)\left(A^{'}\left(x\right)\right)^{2}\left(\vec{x}_{i+1}-\vec{x}_{i}\right)^{2}=A\left(x\right)\\
+D^{''}\left(x\right) & = & B\left(x\right)\left(B^{'}\left(x\right)\right)^{2}\left(\vec{x}_{i+1}-\vec{x}_{i}\right)^{2}=B\left(x\right)
+\end{eqnarray*}
+
+\end_inset
+
+then:
+\begin_inset Formula 
+\[
+\frac{\partial f\left(x\right)}{\partial x}\approx A\left(x\right)\vec{y}_{i}^{''}+B\left(x\right)\vec{y}_{i+1}^{''}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
