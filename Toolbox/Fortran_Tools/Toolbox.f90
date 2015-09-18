@@ -281,10 +281,10 @@ Contains
 !
 
 	Subroutine Sort(n,A,A_sort,Sort_ind)
-		integer, intent(in) :: n    !Number of elements in A
-		real(8), intent(in) , dimension(n) :: A
-		real(8), intent(out), dimension(n) :: A_sort
-		integer, intent(out), dimension(n) :: Sort_ind
+		integer , intent(in) :: n    !Number of elements in A
+		real(dp), intent(in) , dimension(n) :: A
+		real(dp), intent(out), dimension(n) :: A_sort
+		integer , intent(out), dimension(n) :: Sort_ind
 		integer :: i,j
 
 		A_sort = A

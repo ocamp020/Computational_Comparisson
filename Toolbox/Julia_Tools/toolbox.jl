@@ -20,7 +20,7 @@
 function MarkovAR_95(n_z, rho, sigma)
     z_grid = Array(Float64, n_z)
     P_z = Array(Float64, n_z, n_z)
-    P = Array(Float64,n_z-1,n_z-1)
+    P = Array(Float64n_z-1,n_z-1)
 
     # Compute z_grid
     psi = sqrt(n_z-1)*sigma/sqrt(1-rho^2)
